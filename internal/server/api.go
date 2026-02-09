@@ -213,6 +213,8 @@ func toolInvokeHandler(s *Server, w http.ResponseWriter, r *http.Request) {
 		i++
 	}
 
+	s.logger.DebugContext(ctx, fmt.Sprintf("verified auth services: %v", verifiedAuthServices))
+
 	// Check if any of the specified auth services is verified
 	isAuthorized := tool.Authorized(verifiedAuthServices)
 	if !isAuthorized {

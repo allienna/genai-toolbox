@@ -69,14 +69,27 @@ func (a AuthService) GetName() string {
 	return a.Name
 }
 
-// Verifies Google ID token and return claims
+// GetClaimsFromHeader extracts and validates a Google ID token from HTTP headers
+// and returns the token's claims if validation succeeds.
+//
+// The function looks for a token in the header with the key "{service_name}_token"
+// where service_name is the configured name of this auth service.
+// If found, it validates the token against Google's servers using the configured ClientID.
+//
+// Returns:
+// - map[string]any: The claims from the validated token
+// - error: nil if successful, error if validation fails
+// - (nil, nil): if no token header is found
 func (a AuthService) GetClaimsFromHeader(ctx context.Context, h http.Header) (map[string]any, error) {
-	if token := h.Get(a.Name + "_token"); token != "" {
+	headerKey := a.Name + "_token"
+
+	if token := h.Get(headerKey); token != "" {
 		payload, err := idtoken.Validate(ctx, token, a.ClientID)
 		if err != nil {
 			return nil, fmt.Errorf("Google ID token verification failure: %w", err) //nolint:staticcheck
 		}
 		return payload.Claims, nil
 	}
+
 	return nil, nil
 }
