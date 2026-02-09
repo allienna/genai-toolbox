@@ -305,3 +305,6 @@ func main() {
 ```
 
 ## Kinds of Auth Services
+
+- [Google Sign-In](google/)
+- [PingID / PingFederate](ping/)
